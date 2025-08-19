@@ -1,0 +1,10 @@
+[project]
+name = "own-llm"
+version = "0.1.0"
+description = "Build your own LLM [EDUCATIONAL]"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mypy>=1.17.1",
+    "tiktoken>=0.11.0",
+]
