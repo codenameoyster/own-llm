@@ -38,7 +38,9 @@ class SimpleTokenizerV1:
 
     def encode(self, text: str) -> list[int]:
         """Convert text to a list of integers based on the vocabulary."""
-        preprocessed = re.split(r'([,.:;?_!"()\']|--|\s)', text)
+        preprocessed: list[str | Any] = re.split(
+            pattern=r'([,.:;?_!"()\']|--|\s)', string=text
+        )
         preprocessed = [item.strip() for item in preprocessed if item.strip()]
         return [self.str_to_int[s] for s in preprocessed]
 
