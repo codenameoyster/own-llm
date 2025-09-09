@@ -1,6 +1,9 @@
 import logging
 
-from tokenizer.tokenizer import SimpleTokenizerV1, download_file, tokenize_text
+import tiktoken
+
+from gpt.dataset import GPTDatasetV1
+from tokenizer.tokenizer import download_file
 
 _log = logging.getLogger(__name__)
 
@@ -9,22 +12,22 @@ def main():
     _log.info("Starting the download process...")
     file_path = "resources/the-verdict.txt"
     text: str = download_file(file_path)
-    _log.info("Download process completed.")
+    tokenizer = tiktoken.get_encoding("gpt2")
+    enc_text = tokenizer.encode(text)
+    _log.info(f"Encoded text: {len(enc_text)}...")
+    enc_sample = enc_text[50:]
+    context_size = 4
+    x = enc_sample[:context_size]
+    y = enc_sample[1 : context_size + 1]
+    _log.info(f"(x): {x}")
+    _log.info(f"(y): {y}")
 
-    tokenized_text = tokenize_text(text)
-    _log.info(f"Tokenized text: {tokenized_text[:10]}")
-    all_words = sorted(set(tokenized_text))
-    vocab_size = len(all_words)
-    _log.info(f"Vocabulary size: {vocab_size}")
-    text = (
-        "It's the last he painted, you know, Mrs. Gisburn said with pardonable pride."
-    )
+    for i in range(1, context_size + 1):
+        context = enc_sample[:i]
+        desired = enc_sample[i]
+        _log.info(f"{tokenizer.decode(context)} ----> {tokenizer.decode([desired])}")
 
-    tokenizer = SimpleTokenizerV1(vocab={tkn: i for i, tkn in enumerate(all_words)})
-    ids = tokenizer.encode(text)
-    _log.info(f"Encoded text: {ids}")
-    decoded_text = tokenizer.decode(ids)
-    _log.info(f"Decoded text: {decoded_text}")
+    ds = GPTDatasetV1()
 
 
 if __name__ == "__main__":

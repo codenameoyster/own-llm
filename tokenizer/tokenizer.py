@@ -27,9 +27,9 @@ def download_file(destination: str) -> str:
 
 def tokenize_text(text: str) -> list[str]:
     """Tokenize the input text into words."""
-
     result = re.split(r'([,.:;?_!"()\']|--|\s)', text)
     return [item.strip() for item in result if item.strip()]
+
 
 class SimpleTokenizerV1:
     def __init__(self, vocab: dict[str, Any]) -> None:
@@ -48,3 +48,23 @@ class SimpleTokenizerV1:
         """Convert a list of integers back to text."""
         text: str = " ".join(self.int_to_str[i] for i in ids)
         return re.sub(r'\s+([,.?!"()\'])', r"\1", text)
+
+
+class SimpleTokenizerV2:
+    def __init__(self, vocab: dict[str, Any]) -> None:
+        self.str_to_int: dict[str, int] = vocab
+        self.int_to_str: dict[int, str] = {i: s for s, i in vocab.items()}
+
+    def encode(self, text: str) -> list[int]:
+        preprocessed: list[str | Any] = re.split(
+            pattern=r'([,.:;?_!"()\']|--|\s)', string=text
+        )
+        preprocessed = [
+            item if item in preprocessed else "<|unk|>" for item in preprocessed
+        ]
+        return [self.str_to_int[s] for s in preprocessed]
+
+    def decode(self, ids: list[int]) -> str:
+        """Convert a list of integers back to text."""
+        text: str = " ".join(self.int_to_str[i] for i in ids)
+        return re.sub(r'\s+([,.:;?!"()\'])', r"\1", text)
