@@ -1,3 +1,4 @@
+
 import tiktoken
 import torch
 from torch.utils.data import Dataset
@@ -18,3 +19,9 @@ class GPTDatasetV1(Dataset[str]):
             self.target_ids.append(torch.tensor(target_chunk))
 
         return None
+
+    def __len__(self) -> int:
+        return len(self.input_ids)
+
+    def __getitem__(self, index: int) -> tuple[torch.Tensor, torch.Tensor]:
+        return self.input_ids[index], self.target_ids[index]
