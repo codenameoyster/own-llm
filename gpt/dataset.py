@@ -18,8 +18,6 @@ class GPTDatasetV1(Dataset[str]):
             self.input_ids.append(torch.tensor(input_chunk))
             self.target_ids.append(torch.tensor(target_chunk))
 
-        return None
-
     def __len__(self) -> int:
         return len(self.input_ids)
 
