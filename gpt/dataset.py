@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 
 
-class GPTDatasetV1(Dataset[str]):
+class GPTDatasetV1(Dataset[tuple[torch.Tensor, torch.Tensor]]):
     def __init__(
         self, txt: str, tokenizer: tiktoken.Encoding, max_length: int, stride: int
     ) -> None:
